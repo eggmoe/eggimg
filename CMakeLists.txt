@@ -22,6 +22,10 @@ src/glad.c
 target_include_directories(eggimg PUBLIC include)
 
 target_compile_definitions(eggimg PRIVATE UNICODE _UNICODE)
+target_compile_definitions(eggimg PRIVATE 
+$<$<CONFIG:Debug>:EGGIMG_DEBUG>
+$<$<CONFIG:Release>:EGGIMG_RELEASE>
+)
 
 target_link_libraries(eggimg PRIVATE opengl32 gdi32)
 
