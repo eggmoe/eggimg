@@ -11,11 +11,13 @@ endif()
 
 project ("eggimg")
 
-add_executable (eggimg)
+add_executable (eggimg WIN32)
 
 target_sources(eggimg PUBLIC
 src/eggimg.cpp
 )
+
+target_compile_definitions(eggimg PRIVATE UNICODE _UNICODE)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET eggimg PROPERTY CXX_STANDARD 20)
