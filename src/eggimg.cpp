@@ -6,6 +6,7 @@
 #include "eggimg.h"
 #include <iostream>
 #include <cassert>
+#include "file.h"
 
 
 
@@ -142,16 +143,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 #endif
 
 	// get command line arg
-	int argc = 0;
-	LPWSTR* argv = CommandLineToArgvW(pCmdLine, &argc);
-	std::cout << "argc = " << argc << "\n";
-	if (argc > 0)
+	if (pCmdLine[0])
 	{
-		LPWSTR string = argv[0];
-		std::wcout << "argv[0] = " << string << std::endl;
+		std::wcout << "cmdLine arg: " << pCmdLine << std::endl;
+		ei_OpenFile(pCmdLine);
 	}
 
-	LocalFree(argv);
+	
 	// Register the window class.
 	const wchar_t CLASS_NAME[] = L"eggimg Window";
 

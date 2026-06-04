@@ -17,7 +17,8 @@ target_sources(eggimg PUBLIC
 src/eggimg.cpp
 src/glad.c
 src/bitmap.c
- "include/bitmap.h" "src/file.c" "include/file.h")
+src/file.c 
+)
 
 
 target_include_directories(eggimg PUBLIC include)

@@ -3,17 +3,20 @@
 #include "file.h"
 #include <stdio.h>
 
-void OpenFile(const char* f)
+void ei_OpenFile(const wchar_t* f)
 {
 	FILE* fp;
-	errno_t err = fopen_s(&fp, f, "r");
+	
+	errno_t err = _wfopen_s(&fp, f, L"r");
 	if (err == 0)
 	{
-		printf("%s successfully opened\n", f);
+		wprintf(f);
+		printf(" successfully opened\n");
 	}
 	else
 	{
-		printf("%s failed to open\n", f);
+		wprintf(f);
+		printf(" failed to open\n");
 	}
 
 	// close for now
@@ -22,11 +25,13 @@ void OpenFile(const char* f)
 		err = fclose(fp);
 		if (err == 0)
 		{
-			printf("%s successfully closed\n", f);
+			wprintf(f);
+			printf(" successfully closed\n");
 		}
 		else
 		{
-			printf("%s failed to close\n", f);
+			wprintf(f);
+			printf(" failed to close\n");
 		}
 	}
 }
