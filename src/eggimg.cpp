@@ -43,8 +43,8 @@ out vec4 fragColor;
 
 void main()
 {
-    //fragColor = texture(uTexture, vTexCoord);
-	fragColor = vec4(vTexCoord.x,vTexCoord.y,1.0,1.0);
+    fragColor = texture(uTexture, vTexCoord);
+	//fragColor = vec4(vTexCoord.x,vTexCoord.y,1.0,1.0);
 }
 )";
 
@@ -73,6 +73,9 @@ float uvs[] =
 GLuint vbo;
 GLuint vao;
 GLuint shaderProgram;
+GLuint texture;
+
+static char* imageData = nullptr;
 
 //TODO use element array buffers
 void GenerateBoxMesh(void)
@@ -118,6 +121,20 @@ void GenerateShader(void)
 	glUseProgram(shaderProgram);
 
 }
+void GenerateTexture(void)
+{
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 200, 200, 0, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	ei_FreeImage(imageData);
+}
 
 void Draw(void)
 {
@@ -125,6 +142,7 @@ void Draw(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(shaderProgram);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindVertexArray(vao);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -141,12 +159,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	freopen_s(&fp, "CONOUT$", "w", stdout);
 	freopen_s(&fp, "CONOUT$", "w", stderr);
 #endif
-
+	
 	// get command line arg
 	if (pCmdLine[0])
 	{
 		std::wcout << "cmdLine arg: " << pCmdLine << std::endl;
-		ei_OpenFile(pCmdLine);
+		imageData = ei_OpenFile(pCmdLine);
 	}
 
 	
@@ -253,6 +271,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		GenerateBoxMesh();
 		GenerateShader();
+		GenerateTexture();
 		char* string = (char*)glGetString(GL_VERSION);
 		std::cout << "OPENGL VERSION: " << string << std::endl;
 		//MessageBoxA(hwnd, string, "OPENGL VERSION", 0);
