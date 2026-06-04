@@ -73,6 +73,7 @@ GLuint vbo;
 GLuint vao;
 GLuint shaderProgram;
 
+//TODO use element array buffers
 void GenerateBoxMesh(void)
 {
 	glGenVertexArrays(1, &vao);
@@ -140,8 +141,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	freopen_s(&fp, "CONOUT$", "w", stderr);
 #endif
 
+	// get command line arg
+	int argc = 0;
+	LPWSTR* argv = CommandLineToArgvW(pCmdLine, &argc);
+	std::cout << "argc = " << argc << "\n";
+	if (argc > 0)
+	{
+		LPWSTR string = argv[0];
+		std::wcout << "argv[0] = " << string << std::endl;
+	}
 
-
+	LocalFree(argv);
 	// Register the window class.
 	const wchar_t CLASS_NAME[] = L"eggimg Window";
 
