@@ -164,7 +164,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 #endif
 	
 	// get command line arg
-	//TODO switch to GetCommandLine
 	int argc;
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
@@ -309,7 +308,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_SIZE:
-		Draw();
+		glViewport(0, 0, LOWORD(lParam), HIWORD(lParam));
 		break;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
