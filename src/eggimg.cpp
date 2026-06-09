@@ -204,6 +204,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		return 1;
 
 	// Create the window.
+	const float aspect = static_cast<float>(imageWidth) / imageHeight;
 
 	HWND hwnd = CreateWindowExW(
 		0,                              // Optional window styles.
@@ -212,7 +213,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL,            // Window style
 
 		// Size and position
-		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT, 720, 720 / aspect,
 
 		NULL,       // Parent window    
 		NULL,       // Menu
@@ -306,6 +307,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
+	case WM_SIZE:
+		Draw();
 		break;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
