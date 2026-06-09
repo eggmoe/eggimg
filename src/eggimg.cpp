@@ -75,7 +75,10 @@ GLuint vao;
 GLuint shaderProgram;
 GLuint texture;
 
+static int imageWidth, imageHeight;
 static char* imageData = nullptr;
+
+std::wstring filePath;
 
 //TODO use element array buffers
 void GenerateBoxMesh(void)
@@ -121,7 +124,7 @@ void GenerateShader(void)
 	glUseProgram(shaderProgram);
 
 }
-void GenerateTexture(void)
+void GenerateTexture(int w, int h)
 {
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -131,7 +134,7 @@ void GenerateTexture(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 200, 200, 0, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, imageData);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	ei_FreeImage(imageData);
 }
@@ -161,11 +164,29 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 #endif
 	
 	// get command line arg
-	if (pCmdLine[0])
+	//TODO switch to GetCommandLine
+	int argc;
+	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+	if (!argv)
 	{
-		std::wcout << "cmdLine arg: " << pCmdLine << std::endl;
-		imageData = ei_OpenFile(pCmdLine);
+		std::cerr << "CommandLineToArgvW failed!" << std::endl;
 	}
+	else
+	{
+		for (int i = 0; i < argc; i++)
+		{
+			std::wcout << argv[i] << L"\n";
+		}
+		filePath = std::wstring(argv[1]);
+		imageData = ei_OpenFile(filePath.c_str(), &imageWidth, &imageHeight);
+		LocalFree(argv);
+	}
+	//if (pCmdLine[0])
+	//{
+	//	std::wcout << "cmdLine arg: " << pCmdLine << std::endl;
+	//	imageData = ei_OpenFile(pCmdLine, &imageWidth, &imageHeight);
+	//}
 
 	
 	// Register the window class.
@@ -187,7 +208,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	HWND hwnd = CreateWindowExW(
 		0,                              // Optional window styles.
 		CLASS_NAME,                     // Window class
-		L"eggimg",    // Window text
+		filePath.c_str(),    // Window text
 		WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL,            // Window style
 
 		// Size and position
@@ -271,7 +292,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		GenerateBoxMesh();
 		GenerateShader();
-		GenerateTexture();
+		GenerateTexture(imageWidth,imageHeight);
 		char* string = (char*)glGetString(GL_VERSION);
 		std::cout << "OPENGL VERSION: " << string << std::endl;
 		//MessageBoxA(hwnd, string, "OPENGL VERSION", 0);

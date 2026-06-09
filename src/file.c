@@ -109,20 +109,24 @@ char* LoadBMP(FILE* fp)
 	}
 	return (char*)data;
 }
-char* LoadImageFile(ImgFileType type, FILE* fp)
+char* LoadImageFile(ImgFileType type, FILE* fp, int* width, int* height)
 {
-
+	char* data = NULL;
 	switch (type)
 	{
 	case BMP:
-		return LoadBMP(fp);
+		data = LoadBMP(fp);
+		*width = dim.width;
+		*height = dim.height;
+		break;
 	default:
-		return NULL;
+		break;
 	}
+	return data;
 }
 
 
-char* ei_OpenFile(const wchar_t* f)
+char* ei_OpenFile(const wchar_t* f, int* width, int* height)
 {
 	FILE* fp;
 	ImgFileType imgType;
@@ -141,7 +145,7 @@ char* ei_OpenFile(const wchar_t* f)
 	if (fp)
 	{
 		imgType = DetectImageFormat(fp);
-		imageData = LoadImageFile(imgType, fp);
+		imageData = LoadImageFile(imgType, fp, width,height);
 		err = fclose(fp);
 		if (err == 0)
 		{

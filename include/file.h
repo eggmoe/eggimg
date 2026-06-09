@@ -8,7 +8,7 @@ extern "C" {
 
 #include <Windows.h>
 
-char* ei_OpenFile(const wchar_t* f);
+char* ei_OpenFile(const wchar_t* f, int* width, int* height);
 void ei_FreeImage(char* data);
 
 #ifdef __cplusplus
